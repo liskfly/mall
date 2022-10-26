@@ -1,32 +1,84 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
+    <div class="tab-bar">
+      <router-link tag="div" class="tab-bar-item" to="/home">
+        <div class="item home"></div>
+        <span class="text">首页</span>
+      </router-link>
+      <router-link tag="div" class="tab-bar-item" to="/classification">
+        <div class="item classification"></div>
+        <span class="text">分类</span>
+      </router-link>
+      <router-link tag="div" class="tab-bar-item" to="/shoppingcart">
+        <div class="item shoppingcart"></div>
+        <span class="text">购物车</span>
+      </router-link>
+      <router-link tag="div" class="tab-bar-item" to="/user">
+        <div class="item user"></div>
+        <span class="text">我的</span>
+      </router-link>
+    </div>
+    <router-view />
   </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<style lang="scss" scoped>
+.tab-bar {
+  width: 100vw;
+  height: 50px;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  background-color: white;
+  border-top: 1px solid grey;
 
-nav {
-  padding: 30px;
-}
+  .tab-bar-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+    .item {
+      width: 30px;
+      height: 30px;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+    }
 
-nav a.router-link-exact-active {
-  color: #42b983;
+    .text {
+      font-size: 12px;
+    }
+
+    .home {
+      background-image: url(./assets/img/1-001.png);
+    }
+    .classification {
+      background-image: url(./assets/img/2-001.png);
+    }
+    .shoppingcart {
+      background-image: url(./assets/img/3-001.png);
+    }
+    .user {
+      background-image: url(./assets/img/4-001.png);
+    }
+    &.router-link-active {
+      .home {
+        background-image: url(./assets/img/1-002.png);
+      }
+      .classification {
+        background-image: url(./assets/img/2-002.png);
+      }
+      .shoppingcart {
+        background-image: url(./assets/img/3-002.png);
+      }
+      .user {
+        background-image: url(./assets/img/4-002.png);
+      }
+      .text {
+        color: #e93323;
+      }
+    }
+  }
 }
 </style>
