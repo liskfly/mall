@@ -13,20 +13,17 @@ const routes = [
   {
     path: '/classification',
     name: 'classification',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/ClassificationView/ClassificationView.vue')
+    component: () => import('../views/ClassificationView/ClassificationView.vue')
   },
   {
     path:'/shoppingcart',
     name:'shoppingcart',
-    component: () => import(/* webpackChunkName: "about" */ '../views/ShoppingCartView/ShoppingCartView.vue')
+    component: () => import('../views/ShoppingCartView/ShoppingCartView.vue')
   },
   {
     path:'/user',
     name:'user',
-    component: () => import(/* webpackChunkName: "about" */ '../views/UserView/UserView.vue')
+    component: () => import('../views/UserView/UserView.vue')
   }
 ]
 
