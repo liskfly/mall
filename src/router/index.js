@@ -16,25 +16,47 @@ const routes = [
     component: () => import('../views/ClassificationView/ClassificationView.vue')
   },
   {
-    path:'/shoppingcart',
-    name:'shoppingcart',
+    path: '/shoppingcart',
+    name: 'shoppingcart',
     component: () => import('../views/ShoppingCartView/ShoppingCartView.vue')
   },
   {
-    path:'/user',
-    name:'user',
+    path: '/user',
+    name: 'user',
     component: () => import('../views/UserView/UserView.vue')
   },
   {
-    path:'/classify',
-    name:'classify',
+
+    path: '/classify',
+    name: 'classify',
     component: () => import('@/views/classifyView/classifyView.vue')
   },
-  // {
-  //   path:'/Search',
-  //   name:'Search',
-  //   component: () => import('@/views/Search/SearchView.vue')
-  // }
+
+  {
+    path: '/',
+    redirect: '/home'
+  },
+  {
+    path: '/merchant',
+    name: 'merchant',
+    component: () => import('@/views/MerchantView/MerchantView.vue')
+  },
+  {
+    path: '/labels',
+    name: 'labels',
+    component: () => import('@/components/LabelsPage.vue')
+  },
+  {
+    path: '/store',
+    name: 'store',
+    component: () => import('@/components/StorePage.vue')
+  },
+  {
+    path: '/hot',
+    name: 'hot',
+    component: () => import('@/components/HotPage.vue')
+  }
+
 ]
 
 const router = new VueRouter({

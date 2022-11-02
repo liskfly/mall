@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+
 import { chooseType} from "@/dataModel/type.js";
+
 
 Vue.use(Vuex)
 

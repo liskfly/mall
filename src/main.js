@@ -21,8 +21,22 @@ Vue.use(VueAxiosPlugin, {
   resErrorFunc: error => Promise.reject(error)
 })
 
-Vue.use(vantConfig)
+
 Vue.config.productionTip = false
+
+Vue.use(VueAxiosPlugin, {
+  // 请求拦截处理
+  reqHandleFunc: config => ({
+    ...config,
+    baseURL: 'http://m.gdypyg.cn:80/api/',
+  }),
+  reqErrorFunc: error => Promise.reject(error),
+  // 响应拦截处理
+  resHandleFunc: ({ data }) => data,
+  resErrorFunc: error => Promise.reject(error)
+})
+
+Vue.use(vantConfig)
 
 new Vue({
   router,
