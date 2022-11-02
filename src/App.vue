@@ -18,7 +18,9 @@
         <span class="text">我的</span>
       </router-link>
     </div>
-    <router-view />
+    <keep-alive>
+      <router-view />
+    </keep-alive>
   </div>
 </template>
 
@@ -32,7 +34,7 @@
   justify-content: space-around;
   background-color: white;
   border-top: 1px solid grey;
-
+  z-index: 10;
   .tab-bar-item {
     display: flex;
     flex-direction: column;
