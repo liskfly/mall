@@ -24,6 +24,30 @@ const routes = [
     path:'/user',
     name:'user',
     component: () => import('../views/UserView/UserView.vue')
+  },
+  {
+    path:'/',
+    redirect:'/home'
+  },
+  {
+    path:'/merchant',
+    name:'merchant',
+    component: () => import('@/views/MerchantView/MerchantView.vue')
+  },
+  {
+    path:'/labels',
+    name:'labels',
+    component: () => import('@/components/LabelsPage.vue')
+  },
+  {
+    path:'/store',
+    name:'store',
+    component: () => import('@/components/StorePage.vue')
+  },
+  {
+    path:'/hot',
+    name:'hot',
+    component: () => import('@/components/HotPage.vue')
   }
 ]
 

@@ -31,7 +31,8 @@
   display: flex;
   justify-content: space-around;
   background-color: white;
-  border-top: 1px solid grey;
+  border-top: 1px solid rgb(205, 205, 205);
+  z-index: 10;
 
   .tab-bar-item {
     display: flex;
