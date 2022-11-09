@@ -16,45 +16,76 @@ const routes = [
     component: () => import('../views/ClassificationView/ClassificationView.vue')
   },
   {
-    path:'/shoppingcart',
-    name:'shoppingcart',
+    path: '/shoppingcart',
+    name: 'shoppingcart',
     component: () => import('../views/ShoppingCartView/ShoppingCartView.vue')
   },
   {
-    path:'/user',
-    name:'user',
+    path: '/user',
+    name: 'user',
     component: () => import('../views/UserView/UserView.vue')
   },
   {
-    path:'/',
-    redirect:'/home'
+    path: '/classify',
+    name: 'classify',
+    component: () => import('@/views/classifyView/classifyView.vue')
   },
   {
-    path:'/merchant',
-    name:'merchant',
+    path: '/',
+    redirect: '/home'
+  },
+  {
+    path: '/merchant',
+    name: 'merchant',
     component: () => import('@/views/MerchantView/MerchantView.vue')
   },
   {
-    path:'/labels',
-    name:'labels',
+    path: '/labels',
+    name: 'labels',
     component: () => import('@/components/LabelsPage.vue')
   },
   {
-    path:'/store',
-    name:'store',
+    path: '/store',
+    name: 'store',
     component: () => import('@/components/StorePage.vue')
   },
   {
-    path:'/hot',
-    name:'hot',
+    path: '/hot',
+    name: 'hot',
     component: () => import('@/components/HotPage.vue')
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/UserView/LoginView.vue')
   }
 ]
+
+const blackRouter = ['/shoppingcart','/user']
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (getToken()) {
+    next()
+  }
+  else {
+    if (blackRouter.indexOf(to.path) === -1) {
+      next(); 
+    }
+    else {
+      next('/login');
+    }
+  }
+})
+
+function getToken () {
+  return JSON.parse(window.sessionStorage.getItem('token'))
+}
+
 
 export default router

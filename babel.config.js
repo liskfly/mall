@@ -1,5 +1,5 @@
 module.exports = {
-  presets: [
+  presets: [     
     '@vue/cli-plugin-babel/preset'
   ],
   "plugins": [
@@ -7,7 +7,10 @@ module.exports = {
       "libraryName": "vant",
       "libraryDirectory": "es",
       "style": true
+    },"vant"],
+    ["import", {
+      "libraryName": "wot-design",
+      "style": true
     }]
   ]
 }
-

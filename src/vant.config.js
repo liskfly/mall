@@ -1,5 +1,7 @@
 import {
     NavBar,
+    Sidebar,
+    SidebarItem,
     Tabbar,
     Search,
     Slider,
@@ -7,47 +9,65 @@ import {
     TabbarItem,
     Icon,
     NoticeBar,
+    Grid,
+    GridItem,
     Tab,
     Tabs,
     Swipe,
+    Loading,
     SwipeItem,
     List,
     Cell,
     PullRefresh,
     Lazyload,
     ActionSheet,
-    GoodsAction, 
-    GoodsActionIcon, 
+    GoodsAction,
+    GoodsActionIcon,
     GoodsActionButton,
-    Stepper
+    Stepper,
+    DropdownMenu,
+    DropdownItem,
+    Form,
+    Field,
+    Button
 } from 'vant'
 
 const vantComponents = [
     NavBar,
+    Sidebar,
+    SidebarItem,
     Tabbar,
-    TabbarItem,
-    Icon,
     Search,
     Slider,
     Popup,
+    TabbarItem,
+    Icon,
     NoticeBar,
+    Grid,
+    GridItem,
     Tab,
     Tabs,
     Swipe,
+    Loading,
     SwipeItem,
     List,
     Cell,
     PullRefresh,
     Lazyload,
     ActionSheet,
-    GoodsAction, 
-    GoodsActionIcon, 
+    GoodsAction,
+    GoodsActionIcon,
     GoodsActionButton,
-    Stepper
+    Stepper,
+    DropdownMenu,
+    DropdownItem,
+    Form,
+    Field,
+    Button
 ]
 
 export default {
-    install (Vue) {
+    install(Vue) {
         vantComponents.forEach(Component => {
             Vue.use(Component)
         })

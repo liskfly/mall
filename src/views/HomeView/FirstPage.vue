@@ -49,7 +49,6 @@ export default {
     async getrecommendList () {
         let { data } = await this.$axios(HomeList(1))
         this.data = data.list[0]
-        console.log(this.data);
     }
   }
 }

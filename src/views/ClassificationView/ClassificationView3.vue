@@ -4,22 +4,13 @@
       <div class="title">
         <span>商品分类</span>
       </div>
-      <div class="search">
-        <van-search
-          v-model="value"
-          shape="round"
-          placeholder="请输入搜索关键词"
-        />
-        <div class="search-cover" @click.stop="showSearch = true"></div>
-      </div>
+      <van-search
+        v-model="value"
+        shape="round"
+        placeholder="请输入搜索关键词"
+      />
     </div>
-    <van-popup
-      v-model="showSearch"
-      position="right"
-      :style="{ width: '100%', height: '100%' }"
-    >
-      <SearchView @cancel="cancel" />
-    </van-popup>
+
     <div class="classList">
       <div class="loading" v-if="loading">
         <van-loading text-color="red" color="red" size="24px" vertical
@@ -28,50 +19,43 @@
       </div>
 
       <div class="classList-left" ref="sidebar">
-        <van-sidebar v-model="activeKey" @change="onChange">
+        <van-sidebar v-model="activeKey">
           <van-sidebar-item
             v-for="(c, i) in classGoodlist"
             :title="c.cate_name"
             :key="i"
+            @click="choose(i)"
           />
         </van-sidebar>
       </div>
       <div
         class="list"
         ref="scrollbar"
-        id="list1"
-        v-for="b in showList"
-        :key="b.cate_name"
+        id="list"
+        @scroll.passive="handleScroll"
       >
-        <wd-tabs v-model="active" sticky :map-num="4">
-          <wd-tab
-            v-for="c in b.children"
-            :title="c.cate_name"
-            :key="c.cate_name"
-          >
-            <div class="good">
-              <div class="good-name">{{ c.cate_name }}</div>
-              <div class="good-card">
-                <div
-                  class="card"
-                  v-for="a in c.children"
-                  :key="a.cate_name"
-                  @click="goToClassify(a.store_category_id)"
-                >
-                  <img v-lazy="a.pic" :alt="a.cate_name" />
-                  <p>{{ a.cate_name }}</p>
-                </div>
+        <div
+          class="item"
+          v-for="(c, i) in classGoodlist"
+          :key="i"
+          :id="'scroll' + i"
+        >
+          <div class="good" v-for="b in c.children" :key="b.cate_name">
+            <div class="good-name">{{ b.cate_name }}</div>
+            <div class="good-card">
+              <div class="card" v-for="a in b.children" :key="a.cate_name">
+                <img v-lazy="a.pic" :alt="a.cate_name" />
+                <p>{{ a.cate_name }}</p>
               </div>
             </div>
-          </wd-tab>
-        </wd-tabs>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
 import { getClassGoods } from "@/api/classification";
-import SearchView from "@/views/Search/SearchView.vue";
 export default {
   data() {
     return {
@@ -80,9 +64,10 @@ export default {
       value: "",
       activeKey: 0,
       listscrollTop: 0,
-      active: 0,
-      chooseList: 0,
-      showSearch: false,
+      listHeight: [
+        0, 7845, 10128, 11175, 12459, 13601, 14457, 18117, 19259, 21685, 23636,
+        24160, 25398, 25541, 25922, 26351, 27112, 27255,
+      ],
     };
   },
   mounted() {
@@ -93,40 +78,42 @@ export default {
       this.activeTitle(a);
     },
     activeKey(a) {
-      this.active = 0;
       if (a >= 5) {
         this.$refs.sidebar.scrollTop = (a - 5) * 48;
       }
-    },
-  },
-  computed: {
-    showList() {
-      return this.classGoodlist.filter((t, i) => {
-        if (i == this.chooseList) {
-          return t;
-        }
-      });
     },
   },
   methods: {
     async getClassList() {
       let { data } = await this.$axios(getClassGoods);
       this.classGoodlist = data.list;
-      // console.log(this.classGoodlist);
       this.loading = false;
     },
-    onChange(index) {
-      this.chooseList = index;
+    choose(index) {
+      this.activeKey = index;
+      let navPage = document.querySelector("#scroll" + index);
+      this.$refs.scrollbar.scrollTop = navPage.offsetTop - 70;
     },
-    goToClassify(id) {
-      this.$router.push(`/classify?classify_id=${id}`);
+    handleScroll() {
+      this.listscrollTop = parseInt(document.querySelector("#list").scrollTop);
     },
-    cancel() {
-      this.showSearch = false;
+    activeTitle(a) {
+      for (let b = 0; b < this.listHeight.length; b++) {
+        if (a < 7400) {
+          this.activeKey = 0;
+        } else {
+          if (
+            a >= this.listHeight[b - 1] - 400 &&
+            a < this.listHeight[b] - 400
+          ) {
+            this.activeKey = b - 1;
+          }
+        }
+        if (a > 26936) {
+          this.activeKey = 17;
+        }
+      }
     },
-  },
-  components: {
-    SearchView,
   },
 };
 </script>
@@ -149,16 +136,6 @@ export default {
         margin: auto;
       }
     }
-    .search{
-      position: relative;
-      .search-cover{
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        left: 0;
-        top: 0;
-      }
-    }
     .van-search {
       padding: 5px 12px;
       height: 34px;
@@ -176,9 +153,6 @@ export default {
     }
   }
   .classList {
-    position: sticky;
-    top: 70px;
-    left: 0;
     display: flex;
     gap: 5px;
     justify-content: space-between;
@@ -197,7 +171,6 @@ export default {
       .van-sidebar-item {
         padding: 14px 12px;
         background-color: white;
-        z-index: 100;
       }
       .van-sidebar-item--select::before {
         left: 0;
@@ -221,7 +194,6 @@ export default {
     }
 
     .list {
-      // position: relative;
       flex: 1;
       height: calc(100vh - 120px);
       overflow: scroll;
@@ -269,9 +241,6 @@ export default {
             }
           }
         }
-      }
-      .wd-tabs__line {
-        background: linear-gradient(315deg, #f05151 0, #f57676 100%);
       }
     }
   }

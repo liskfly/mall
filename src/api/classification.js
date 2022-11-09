@@ -1,0 +1,1 @@
+export const getClassGoods='store/product/category/lstt'
