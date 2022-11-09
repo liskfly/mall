@@ -157,11 +157,12 @@ export default {
         this.loading = false;
       }
     },
-    async getCategoryList(id) {
-      let { data } = await this.$axios(categoryList(id));
-      this.category = data;
+
+    async getCategoryList (id) {
+      let { data } = await this.$axios(categoryList(id))
+      this.category = data
     },
-    onClick(id) {
+    onClick (id) {
       if (this.titleId != id) {
         this.listNum = 0;
         this.recommendList = [];

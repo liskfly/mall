@@ -163,6 +163,7 @@ export default {
 
     img {
       width: 100vw;
+      vertical-align: bottom;
     }
 
     }

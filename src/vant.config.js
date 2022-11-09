@@ -27,6 +27,9 @@ import {
     Stepper,
     DropdownMenu,
     DropdownItem,
+    Form,
+    Field,
+    Button
 } from 'vant'
 
 const vantComponents = [
@@ -58,6 +61,9 @@ const vantComponents = [
     Stepper,
     DropdownMenu,
     DropdownItem,
+    Form,
+    Field,
+    Button
 ]
 
 export default {

@@ -26,7 +26,6 @@ const routes = [
     component: () => import('../views/UserView/UserView.vue')
   },
   {
-
     path: '/classify',
     name: 'classify',
     component: () => import('@/views/classifyView/classifyView.vue')
@@ -37,6 +36,7 @@ const routes = [
     name: 'classify-store',
     component: () => import('@/views/classifyView/classifyStore.vue')
   },
+
   {
     path: '/',
     redirect: '/home'
@@ -62,17 +62,43 @@ const routes = [
     component: () => import('@/components/HotPage.vue')
   },
   {
+
     path: '/shop',
     name: 'shop',
     component: () => import('@/views/ShopView/ShopView.vue'),
+  },
+{
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/UserView/LoginView.vue')
   }
 ]
+
+const blackRouter = ['/shoppingcart', '/user']
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (getToken()) {
+    next()
+  }
+  else {
+    if (blackRouter.indexOf(to.path) === -1) {
+      next();
+    }
+    else {
+      next('/login');
+    }
+  }
+})
+
+function getToken() {
+  return JSON.parse(window.sessionStorage.getItem('token'))
+}
 
 
 export default router

@@ -31,20 +31,31 @@
     <van-goods-action class="footer" style="z-index: 2011">
       <van-goods-action-icon icon="chat-o" text="客服" color="#ee0a24" />
       <van-goods-action-icon icon="cart-o" text="购物车" />
+
       <van-goods-action-icon
         icon="star"
         text="已收藏"
+        @click="addCollection()"
         color="#ff5000"
         v-show="collection"
       />
       <van-goods-action-icon
         icon="star"
-        text="已收藏"
+        text="未收藏"
+        @click="addCollection()"
         color="grey"
         v-show="!collection"
       />
-      <van-goods-action-button type="warning" text="加入购物车" />
-      <van-goods-action-button type="danger" text="立即购买" />
+      <van-goods-action-button
+        type="warning"
+        text="加入购物车"
+        @click="addShoppingCart(data)"
+      />
+      <van-goods-action-button
+        type="danger"
+        text="立即购买"
+        @click="addPayment()"
+      />
     </van-goods-action>
     <div class="return">
       <img class="goback" src="../assets/img/bn.png" @click="goBack" />
@@ -55,9 +66,10 @@
 </template>
 
 <script>
-import { store } from "@/api/homeview.js";
-import TopBanner from "@/components/store/TopBanner.vue";
-import BottomIntroduce from "@/components/store/BottomIntroduce.vue";
+import { store } from "@/api/homeview.js"
+import { mapMutations } from "vuex"
+import TopBanner from "@/components/store/TopBanner.vue"
+import BottomIntroduce from "@/components/store/BottomIntroduce.vue"
 export default {
   data() {
     return {
@@ -84,18 +96,40 @@ export default {
     goHome() {
       this.$router.push(`/home`);
     },
-    goBack() {
-      this.$router.go(-1);
-      this.data={}
+    goBack () {
+      this.$router.go(-1)
     },
-    async getStoreData() {
-      let { data } = await this.$axios(store(this.id));
-      this.data = data;
-      // if(data){
-      //   this.loading=false
-      // }
-      console.log(data);
+    async getStoreData () {
+      let { data } = await this.$axios(store(this.id))
+      this.data = data
+      this.isCollection(data)
+      this.collection = this.$store.state.ischoice
     },
+    addShoppingCart (data) {
+      let { price, product_id, store_name, image, mer_id, merchant } = data
+      let mer_avatar = merchant.mer_avatar
+      if (!this.show) {
+        data = { price, product_id, store_name, image, mer_id, mer_avatar, value: 1 }
+      } else {
+        data = { price, product_id, store_name, image, mer_id, mer_avatar, value: this.value }
+        console.log(this.value);
+      }
+      this.addgoods(data)
+    },
+    addCollection () {
+      let { price, product_id, store_name, image, mer_id, merchant } = this.data
+      let mer_avatar = merchant.mer_avatar
+      let data = { price, product_id, store_name, image, mer_id, mer_avatar }
+      this.collectionAdd(data)
+      this.collection = !this.collection
+    },
+    addPayment () {
+      let { price, product_id, store_name, image, mer_id, merchant } = this.data
+      let mer_avatar = merchant.mer_avatar
+      let data = { price, product_id, store_name, image, mer_id, mer_avatar, value: this.value }
+      this.paymentAdd(data)
+    },
+    ...mapMutations(['addgoods', 'collectionAdd', 'isCollection','paymentAdd'])
   },
   components: {
     TopBanner,
@@ -123,10 +157,10 @@ export default {
     margin-top: 10px;
   }
   .loading {
-      position: absolute;
-      padding-top: 75%;
-      padding-left: 45%;
-    }
+    position: absolute;
+    padding-top: 75%;
+    padding-left: 45%;
+  }
   .content {
     padding: 16px 16px 100px;
     position: relative;
