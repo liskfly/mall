@@ -31,7 +31,12 @@ const routes = [
     name: 'classify',
     component: () => import('@/views/classifyView/classifyView.vue')
   },
+  {
 
+    path: '/classify-store',
+    name: 'classify-store',
+    component: () => import('@/views/classifyView/classifyStore.vue')
+  },
   {
     path: '/',
     redirect: '/home'
@@ -55,8 +60,12 @@ const routes = [
     path: '/hot',
     name: 'hot',
     component: () => import('@/components/HotPage.vue')
+  },
+  {
+    path: '/shop',
+    name: 'shop',
+    component: () => import('@/views/ShopView/ShopView.vue'),
   }
-
 ]
 
 const router = new VueRouter({

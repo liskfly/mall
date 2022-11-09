@@ -12,7 +12,7 @@
         </div>
       </div>
     </van-action-sheet>
-    <div class="shop">
+    <div class="shop" @click="goToStoreDetil(data.mer_id)">
       <div class="shop-top">
         <img :src="data.merchant.mer_avatar">
         <div class="flex flex-c flex-j-sb">
@@ -43,6 +43,11 @@ export default {
   data () {
     return {
       show: false
+    }
+  },
+  methods:{
+    goToStoreDetil(a){
+      this.$router.push(`/shop?shop_id=${a}`)
     }
   }
 }

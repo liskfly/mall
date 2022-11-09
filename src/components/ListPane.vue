@@ -1,6 +1,6 @@
 <template>
   <div class="list-pane">
-    <div class="goods-card" v-for="g in goodsList" :key="g.product_id">
+    <div class="goods-card" v-for="g in goodsList" :key="g.product_id" @click="goToGoods(g.product_id)">
       <img v-lazy="g.image" :alt="g.store_info" />
       <div class="product-megs">
         <p>{{ g.store_name }}</p>
@@ -19,6 +19,11 @@
 <script>
 export default {
   props: ["goodsList"],
+  methods:{
+    goToGoods(a){
+      this.$router.push(`/store?store_id=${a}`)
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
