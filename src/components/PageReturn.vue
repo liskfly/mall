@@ -39,13 +39,13 @@ export default {
   }
 
   .goback {
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
   }
 
   .gohome {
-    width: 23px;
-    height: 23px;
+    width: 20px;
+    height: 20px;
     margin: 0 8px;
   }
 }

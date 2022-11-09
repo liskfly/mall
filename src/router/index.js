@@ -31,6 +31,13 @@ const routes = [
     component: () => import('@/views/classifyView/classifyView.vue')
   },
   {
+
+    path: '/classify-store',
+    name: 'classify-store',
+    component: () => import('@/views/classifyView/classifyStore.vue')
+  },
+
+  {
     path: '/',
     redirect: '/home'
   },
@@ -55,13 +62,19 @@ const routes = [
     component: () => import('@/components/HotPage.vue')
   },
   {
+
+    path: '/shop',
+    name: 'shop',
+    component: () => import('@/views/ShopView/ShopView.vue'),
+  },
+{
     path: '/login',
     name: 'login',
     component: () => import('../views/UserView/LoginView.vue')
   }
 ]
 
-const blackRouter = ['/shoppingcart','/user']
+const blackRouter = ['/shoppingcart', '/user']
 
 const router = new VueRouter({
   mode: 'history',
@@ -75,7 +88,7 @@ router.beforeEach((to, from, next) => {
   }
   else {
     if (blackRouter.indexOf(to.path) === -1) {
-      next(); 
+      next();
     }
     else {
       next('/login');
@@ -83,7 +96,7 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-function getToken () {
+function getToken() {
   return JSON.parse(window.sessionStorage.getItem('token'))
 }
 

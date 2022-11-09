@@ -1,7 +1,7 @@
 <template>
     <div class="secondary"  v-if="index != 0">
         <div class="secondary-list" v-if="category[0]">
-            <div v-for="({store_category_id,pic,cate_name},index) in category" :key="store_category_id" class="item" v-show="index <9">
+            <div v-for="({store_category_id,pic,cate_name},index) in category" :key="store_category_id" class="item" v-show="index <9" @click="goToClassify(store_category_id)">
                 <img v-lazy="pic" />
                 <span class="name">{{cate_name}}</span>
             </div>
@@ -24,7 +24,9 @@ export default {
     }
   },
   methods: {
-
+     goToClassify(id) {
+      this.$router.push(`/classify?classify_id=${id}`);
+    },
   },
 //   watch:{
 //     'category'(newValue){

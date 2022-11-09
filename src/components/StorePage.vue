@@ -1,40 +1,66 @@
 <template>
   <div class="store">
     <TopBanner :data="data" />
-    <div class="choice">
+    <div class="choice" v-if="data">
       <van-cell is-link title="已选择" @click="show = true" class="grey" />
     </div>
     <van-action-sheet v-model="show" title=" ">
       <div class="content">
         <div class="show">
-          <img :src="data.image">
+          <img :src="data.image" />
           <div class="details">
-            <span class="store_name">{{data.store_name}}</span>
+            <span class="store_name">{{ data.store_name }}</span>
             <div>
-              <span class="price">{{'¥' + data.price}}</span>
-              <span class="stock">{{'库存:' + data.stock}}</span>
+              <span class="price">{{ "¥" + data.price }}</span>
+              <span class="stock">{{ "库存:" + data.stock }}</span>
             </div>
           </div>
         </div>
         <div class="carnum">
           <span>数量</span>
-          <van-stepper v-model="value" theme="round" button-size="22" disable-input />
+          <van-stepper
+            v-model="value"
+            theme="round"
+            button-size="22"
+            disable-input
+          />
         </div>
       </div>
     </van-action-sheet>
     <BottomIntroduce :data="data" />
-    <van-goods-action class="footer" style="z-index: 2011;">
+    <van-goods-action class="footer" style="z-index: 2011">
       <van-goods-action-icon icon="chat-o" text="客服" color="#ee0a24" />
       <van-goods-action-icon icon="cart-o" text="购物车" />
-      <van-goods-action-icon icon="star" text="已收藏" @click="addCollection()" color="#ff5000" v-show="collection" />
-      <van-goods-action-icon icon="star" text="未收藏" @click="addCollection()" color="grey" v-show="!collection" />
-      <van-goods-action-button type="warning" text="加入购物车" @click="addShoppingCart(data)" />
-      <van-goods-action-button type="danger" text="立即购买"  @click="addPayment()" />
+
+      <van-goods-action-icon
+        icon="star"
+        text="已收藏"
+        @click="addCollection()"
+        color="#ff5000"
+        v-show="collection"
+      />
+      <van-goods-action-icon
+        icon="star"
+        text="未收藏"
+        @click="addCollection()"
+        color="grey"
+        v-show="!collection"
+      />
+      <van-goods-action-button
+        type="warning"
+        text="加入购物车"
+        @click="addShoppingCart(data)"
+      />
+      <van-goods-action-button
+        type="danger"
+        text="立即购买"
+        @click="addPayment()"
+      />
     </van-goods-action>
     <div class="return">
-      <img class="goback" src="../assets/img/bn.png" @click="goBack">
+      <img class="goback" src="../assets/img/bn.png" @click="goBack" />
       <span class="line">|</span>
-      <img class="gohome" src="../assets/pic2.svg" @click="goHome">
+      <img class="gohome" src="../assets/pic2.svg" @click="goHome" />
     </div>
   </div>
 </template>
@@ -45,20 +71,21 @@ import { mapMutations } from "vuex"
 import TopBanner from "@/components/store/TopBanner.vue"
 import BottomIntroduce from "@/components/store/BottomIntroduce.vue"
 export default {
-  data () {
+  data() {
     return {
       id: this.$route.query.store_id,
       data: {},
       show: false,
       collection: false,
-      value: 1
-    }
+      // loading: true,
+      value: 1,
+    };
   },
-  created () {
-    this.getStoreData()
+  created() {
+    this.getStoreData();
   },
   watch: {
-    "$route.query.store_id" (a, b) {
+    "$route.query.store_id"(a, b) {
       this.id = a;
       if (a != b && a) {
         this.getStoreData();
@@ -66,8 +93,8 @@ export default {
     },
   },
   methods: {
-    goHome () {
-      this.$router.push(`/home`)
+    goHome() {
+      this.$router.push(`/home`);
     },
     goBack () {
       this.$router.go(-1)
@@ -106,9 +133,9 @@ export default {
   },
   components: {
     TopBanner,
-    BottomIntroduce
-  }
-}
+    BottomIntroduce,
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -122,14 +149,18 @@ export default {
   z-index: 11;
   background-color: #f5f5f5;
   overflow: auto;
-
+  position: relative;
   .grey {
     color: grey;
   }
   .choice {
     margin-top: 10px;
   }
-
+  .loading {
+    position: absolute;
+    padding-top: 75%;
+    padding-left: 45%;
+  }
   .content {
     padding: 16px 16px 100px;
     position: relative;
