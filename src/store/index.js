@@ -15,6 +15,7 @@ export default new Vuex.Store({
     ischoice: false,
     paymentlist: JSON.parse(window.localStorage.getItem('payment')) || [],
     data:JSON.parse(window.sessionStorage.getItem('token')) || {},
+    location:JSON.parse(window.localStorage.getItem('location')) || []
   },
   getters: {
   },
@@ -86,6 +87,26 @@ export default new Vuex.Store({
     replacegoodscar(state, data) {
       state.goodscar = data
       window.localStorage.setItem('goodscar', JSON.stringify(state.goodscar))
+    },
+    createLocation(state,data){
+      let create = {}
+      console.log(state.location);
+      create.id =  state.location.length + 1 || 1
+      create.name = data.name
+      create.tel = data.tel
+      create.address = data.city + data.province + data.county + data.addressDetail
+      create.isDefault = data.isDefault || false
+      console.log(create);
+      state.location.push(create)
+      state.location = state.location.map((item)=>{
+        if(item.id != create.id && create.isDefault == true){
+          return {...item,isDefault:false}
+        }else {
+          return item
+        }
+      })
+      console.log(state.location);
+      window.localStorage.setItem('location', JSON.stringify(state.location))
     }
   },
   actions: {

@@ -1,9 +1,9 @@
 <template>
   <div class="userdata">
     <div class="top">
-      <img src="../../assets/prev.svg">
+      <img src="../../assets/prev.svg" @click="goBack">
       <span>个人信息</span>
-      <img src="../../assets/more.svg" alt="">
+      <img src="../../assets/more.svg">
     </div>
     <div class="head">
       <img src="../../assets/img/me.jpg">
@@ -22,14 +22,18 @@
       </div>
       <img class="data-right" src="../../assets/img/mP.png">
     </div>
-   
-        <LocationPage />
-
+    <div class="cancellation" @click="cancellation">
+      <span>注销</span>
+    </div>
+    <van-popup v-model="show" position="right">
+      <LocationPage :data="data" @hidden="pageHidden" />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex"
+import LocationPage from "../../components/LocationWrite.vue"
 export default {
   data () {
     return {
@@ -43,8 +47,18 @@ export default {
     showPopup () {
       this.show = true;
     },
+    goBack () {
+      this.$router.go(-1)
+    },
+    pageHidden (value) {
+      this.show = value
+    },
+    cancellation() {
+        window.sessionStorage.setItem('token', JSON.stringify(''))
+        this.$router.push(`/home`);
+    }
   },
-  components:{
+  components: {
     LocationPage
   }
 }
@@ -116,6 +130,21 @@ export default {
     .data-right {
       width: 10px;
       height: 20px;
+    }
+  }
+  
+  .cancellation {
+    width: 100vw;
+    height: 60px;
+    background-color: white;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+
+    span {
+        font-size: 20px;
+        font-weight: 700;
+        margin: auto;
     }
   }
 }

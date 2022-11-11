@@ -34,7 +34,9 @@ import {
     SubmitBar,
     Checkbox,
     CheckboxGroup,
-    Radio
+    Radio,
+    AddressList,
+    AddressEdit
 } from 'vant'
 
 const vantComponents = [
@@ -73,7 +75,9 @@ const vantComponents = [
     SubmitBar,
     Checkbox, 
     CheckboxGroup,
-    Radio
+    Radio,
+    AddressList,
+    AddressEdit
 ]
 
 export default {
