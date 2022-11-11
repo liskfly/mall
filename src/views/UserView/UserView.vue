@@ -1,7 +1,7 @@
 <template>
   <div class="user">
     <div class="top">
-      <div class="flex topbox justify-SB">
+      <div class="flex topbox justify-SB" @click="goUserData">
         <img src="../../assets/img/me.jpg" class="head">
         <div class="flex flex-1 justify-SB flex-d-c userdata">
           <span>{{'用户名:' +name}}</span>
@@ -16,10 +16,10 @@
       </div>
     </div>
     <div class="buy">
-      <div class="payment buy-list">
-        <img src="../../assets/payment.svg">
-        <span>待付款</span>
-      </div>
+      <!-- <div class="payment buy-list">
+        <img src="../../assets/location.svg">
+        <span>地址</span>
+      </div> -->
       <div class="delivery buy-list">
         <img src="../../assets/delivery.svg">
         <span>待发货</span>
@@ -78,6 +78,9 @@ export default {
   methods: {
     getUserName () {
       this.name = JSON.parse(window.sessionStorage.getItem('token')).user
+    },
+    goUserData(){
+      this.$router.push(`/userdata`)
     }
   }
 }

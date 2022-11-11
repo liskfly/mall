@@ -29,7 +29,12 @@ import {
     DropdownItem,
     Form,
     Field,
-    Button
+    Button,
+    SwipeCell,
+    SubmitBar,
+    Checkbox,
+    CheckboxGroup,
+    Radio
 } from 'vant'
 
 const vantComponents = [
@@ -63,7 +68,12 @@ const vantComponents = [
     DropdownItem,
     Form,
     Field,
-    Button
+    Button,
+    SwipeCell,
+    SubmitBar,
+    Checkbox, 
+    CheckboxGroup,
+    Radio
 ]
 
 export default {

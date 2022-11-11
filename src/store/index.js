@@ -8,12 +8,13 @@ export default new Vuex.Store({
   state: {
     storeArr: JSON.parse(localStorage.getItem("CONXERN_STORE")) || [],
     listType: chooseType,
+    isAddgoods:false,
     goodscar: JSON.parse(window.localStorage.getItem('goodscar')) || [],
     same: false,
     collectionlist: JSON.parse(window.localStorage.getItem('collection')) || [],
     ischoice: false,
     paymentlist: JSON.parse(window.localStorage.getItem('payment')) || [],
-
+    data:JSON.parse(window.sessionStorage.getItem('token')) || {},
   },
   getters: {
   },
@@ -41,21 +42,21 @@ export default new Vuex.Store({
     },
     addgoods(state, data) {
       state.goodscar.forEach((item) => {
-        if (data.id == item.id) {
+        if (data.product_id == item.product_id) {
           item.value = data.value + item.value
         } else {
-          state.same = true
+          state.isAddgoods = true
         }
       })
-      if (state.same || state.goodscar.length == 0) {
+      if (state.isAddgoods || state.goodscar.length == 0) {
         state.goodscar.push(data)
       }
       window.localStorage.setItem('goodscar', JSON.stringify(state.goodscar))
-      state.same = false
+      state.isAddgoods = false
     },
     collectionAdd(state, data) {
-      state.collectionlist = state.collectionlist.filter(({ mer_id }) => {
-        if (data.mer_id == mer_id) {
+      state.collectionlist = state.collectionlist.filter(({ product_id }) => {
+        if (data.product_id == product_id) {
           state.same = true
           return false
         } else {
@@ -79,8 +80,12 @@ export default new Vuex.Store({
       })
     },
     paymentAdd(state, data) {
-      state.paymentlist.push(data)
+      state.paymentlist.push(...data)
       window.localStorage.setItem('payment', JSON.stringify(state.paymentlist))
+    },
+    replacegoodscar(state, data) {
+      state.goodscar = data
+      window.localStorage.setItem('goodscar', JSON.stringify(state.goodscar))
     }
   },
   actions: {

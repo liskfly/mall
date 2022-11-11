@@ -108,10 +108,11 @@ export default {
     addShoppingCart (data) {
       let { price, product_id, store_name, image, mer_id, merchant } = data
       let mer_avatar = merchant.mer_avatar
+      let mer_name = merchant.mer_name
       if (!this.show) {
-        data = { price, product_id, store_name, image, mer_id, mer_avatar, value: 1 }
+        data = { price, product_id, store_name, image, mer_id, mer_avatar, mer_name ,value: 1 }
       } else {
-        data = { price, product_id, store_name, image, mer_id, mer_avatar, value: this.value }
+        data = { price, product_id, store_name, image, mer_id, mer_avatar, mer_name , value: this.value }
         console.log(this.value);
       }
       this.addgoods(data)
@@ -119,14 +120,16 @@ export default {
     addCollection () {
       let { price, product_id, store_name, image, mer_id, merchant } = this.data
       let mer_avatar = merchant.mer_avatar
-      let data = { price, product_id, store_name, image, mer_id, mer_avatar }
+      let mer_name = merchant.mer_name
+      let data = { price, product_id, store_name, image, mer_id, mer_name , mer_avatar }
       this.collectionAdd(data)
       this.collection = !this.collection
     },
     addPayment () {
       let { price, product_id, store_name, image, mer_id, merchant } = this.data
       let mer_avatar = merchant.mer_avatar
-      let data = { price, product_id, store_name, image, mer_id, mer_avatar, value: this.value }
+      let mer_name = merchant.mer_name
+      let data = [{ price, product_id, store_name, image, mer_id, mer_avatar, mer_name , value: this.value }]
       this.paymentAdd(data)
     },
     ...mapMutations(['addgoods', 'collectionAdd', 'isCollection','paymentAdd'])
