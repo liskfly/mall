@@ -19,6 +19,7 @@
           v-for="s in searchList"
           :key="s.searchId"
           @click="onSearch(s.text)"
+          @touchstart="gtouchstart(s.searchId)"
           >{{ s.text }}</span
         >
       </div>
@@ -38,12 +39,14 @@
 </template>
 <script>
 import { getHotWord } from "@/api/searchApi";
+import { Dialog } from "vant";
 export default {
   data() {
     return {
       searchStr: "",
       searchList: JSON.parse(localStorage.getItem("SEARCH_LIST")) || [],
       hotKeyword: [],
+      timeOutEvent: 0,
     };
   },
   created() {
@@ -52,7 +55,7 @@ export default {
   methods: {
     cancel() {
       let a = false;
-       this.searchStr = "";
+      this.searchStr = "";
       this.$emit("cancel", a);
     },
     onSearch(a) {
@@ -77,6 +80,26 @@ export default {
       this.searchStr = "";
       let searchArr = JSON.stringify(this.searchList);
       localStorage.setItem("SEARCH_LIST", searchArr);
+    },
+    gtouchstart(a) {
+      this.timeOutEvent = setTimeout(() => {
+        this.timeOutEvent = 0;
+        Dialog.confirm({
+          message: "是否删除该条历史记录",
+        })
+          .then(() => {
+            this.searchList = this.searchList.filter(
+              ({ searchId }) => searchId != a
+            );
+            let searchArr = JSON.stringify(this.searchList);
+            localStorage.setItem("SEARCH_LIST", searchArr);
+            // console.log(a);
+          })
+          .catch(() => {
+            // on cancel
+          });
+      }, 300);
+      return false;
     },
   },
 };

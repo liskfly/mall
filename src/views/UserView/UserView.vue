@@ -2,85 +2,126 @@
   <div class="user">
     <div class="top">
       <div class="flex topbox justify-SB">
-        <img src="../../assets/img/me.jpg" class="head">
+        <img src="../../assets/img/me.jpg" class="head" />
         <div class="flex flex-1 justify-SB flex-d-c userdata">
-          <span>{{'用户名:' +name}}</span>
+          <span>{{ "用户名:" + name }}</span>
           <div>
-            <span>{{'关注:0'}}</span>
-            <span>{{'收藏:0'}}</span>
+            <span>{{ "关注:0" }}</span>
+            <span>{{ "收藏:0" }}</span>
           </div>
         </div>
         <div class="enter flex">
-          <img src="../../assets/img/mP.png">
+          <img src="../../assets/img/mP.png" />
         </div>
       </div>
     </div>
     <div class="buy">
-      <div class="payment buy-list">
-        <img src="../../assets/payment.svg">
-        <span>待付款</span>
-      </div>
-      <div class="delivery buy-list">
-        <img src="../../assets/delivery.svg">
+      <div class="delivery buy-list" @click="shoePurchased = !shoePurchased">
+        <img src="../../assets/delivery.svg" />
         <span>待发货</span>
       </div>
-      <div class="Receipt buy-list">
-        <img src="../../assets/Receipt.svg">
-        <span>待送到</span>
+      <div class="Receipt buy-list" @click="showFoot = !showFoot">
+        <img src="../../assets/footprint.svg" />
+        <span>足迹</span>
       </div>
-      <div class="collection buy-list">
-        <img src="../../assets/collection.svg">
+      <div class="collection buy-list" @click="showCollect = !showCollect">
+        <img src="../../assets/collection.svg" />
         <span>收藏</span>
       </div>
-      <div class="subscribe buy-list">
-        <img src="../../assets/subscribe.svg">
+      <div class="subscribe buy-list" @click="showSearch = !showSearch">
+        <img src="../../assets/subscribe.svg" />
         <span>订阅</span>
       </div>
     </div>
     <div class="list">
       <div class="listbox">
         <div class="flex">
-          <img src="../../assets/goodscar.svg" class="pic">
+          <img src="../../assets/goodscar.svg" class="pic" />
           <span>购物车</span>
         </div>
-        <img src="../../assets/img/mP.png" class="enter">
+        <img src="../../assets/img/mP.png" class="enter" />
       </div>
 
       <div class="listbox">
         <div class="flex">
-          <img src="../../assets/affiliate.svg" class="pic">
+          <img src="../../assets/affiliate.svg" class="pic" />
           <span>分公司</span>
         </div>
-        <img src="../../assets/img/mP.png" class="enter">
+        <img src="../../assets/img/mP.png" class="enter" />
       </div>
 
       <div class="listbox">
         <div class="flex">
-          <img src="../../assets/aboutus.svg" class="pic">
+          <img src="../../assets/aboutus.svg" class="pic" />
           <span>关于我们</span>
         </div>
-        <img src="../../assets/img/mP.png" class="enter">
+        <img src="../../assets/img/mP.png" class="enter" />
       </div>
     </div>
+    <van-popup
+      v-model="showSearch"
+      position="right"
+      :style="{ width: '100%', height: '100%' }"
+    >
+      <SubScribe @cancel="cancel" />
+    </van-popup>
+    <van-popup
+      v-model="showCollect"
+      position="right"
+      :style="{ width: '100%', height: '100%' }"
+    >
+      <CollectibleItem @cancel="cancelCollect" />
+    </van-popup>
+    <van-popup
+      v-model="shoePurchased"
+      position="bottom"
+      :style="{ height: '100%' }"
+    >
+      <PurchasedItem @cancel="cancelPurchased" />
+    </van-popup>
+    <van-popup v-model="showFoot" position="top" :style="{ height: '100%' }">
+      <FootPrint @cancel=" cancelFoot" />
+    </van-popup>
   </div>
 </template>
 
 <script>
+import CollectibleItem from "../../components/CollectibleItem.vue";
+import FootPrint from "../../components/FootPrint.vue";
+import PurchasedItem from "../../components/PurchasedItem.vue";
+import SubScribe from "../../components/SubScribe.vue";
 export default {
-  data () {
+  components: { SubScribe, CollectibleItem, PurchasedItem, FootPrint},
+  data() {
     return {
-      name: ''
-    }
+      name: "",
+      showSearch: false,
+      showCollect: false,
+      shoePurchased: false,
+      showFoot: false,
+    };
   },
-  created () {
-    this.getUserName()
+  created() {
+    this.getUserName();
   },
   methods: {
-    getUserName () {
-      this.name = JSON.parse(window.sessionStorage.getItem('token')).user
+    getUserName() {
+      this.name = JSON.parse(window.sessionStorage.getItem("token")).user;
+    },
+    cancel() {
+      this.showSearch = false;
+    },
+    cancelCollect() {
+      this.showCollect = false;
+    },
+    cancelPurchased() {
+      this.shoePurchased = false;
+    },
+    cancelFoot(){
+      this.showFoot=false
     }
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>

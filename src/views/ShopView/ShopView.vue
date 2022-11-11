@@ -31,7 +31,9 @@
         </div>
         <div class="concern">
           <i></i>
-          <span :class="{active:true}" @click="subscribe(s)">订阅</span>
+          <span :class="{ active: isConxern }" @click="subscribe(s)">{{
+            isConxern ? "已订阅" : "订阅"
+          }}</span>
         </div>
       </div>
       <div class="nav" v-if="chooseShop == 'home'">
@@ -44,12 +46,12 @@
             @click="chageOrder(o.text, o.value)"
           >
             {{ o.text }}
+            <i
+              v-if="o.text == '价格' && count % 2 != 0 && count != 0"
+              class="icon1"
+            ></i>
+            <i v-if="o.text=='价格'&&count%2==0&&count!=0" class="icon2"></i>
           </div>
-          <!-- <div class="item">评分</div>
-          <div class="item">销量</div>
-          <div class="item">价格</div>
-          <div class="item">新品</div>
-          <div class="item">活动</div> -->
         </div>
       </div>
     </div>
@@ -115,7 +117,7 @@
   </div>
 </template>
 <script>
-import {mapMutations} from "vuex"
+import { mapState, mapMutations } from "vuex";
 import PageReturn from "../../components/PageReturn.vue";
 import {
   getStoreApi,
@@ -179,6 +181,7 @@ export default {
         return "ShopSpecial";
       }
     },
+    ...mapState(["isConxern"]),
   },
   methods: {
     setClass(a) {
@@ -186,10 +189,11 @@ export default {
     },
     async getStoreData() {
       let { data } = await this.$axios(getStoreApi(this.shopId));
-      this.store = [{ ...data }];
+      this.store = [data];
+      // console.log(data);
+      this.isSubscribe(data);
     },
     async getGoods() {
-      // if(this.chooseShop=='home'){
       this.page++;
       let { data } = await this.$axios(
         getStoreGoods(this.shopId, this.order, this.page)
@@ -199,12 +203,10 @@ export default {
       if (data.count == this.storeGoods.length || data.list == []) {
         this.finished = true;
       }
-      // }
     },
     async getClassify() {
       let { data } = await this.$axios(getStoreClassify(this.shopId));
       this.storeClassify = data;
-      // console.log(data);
     },
     chageOrder(a, b) {
       this.chooseText = a;
@@ -226,14 +228,28 @@ export default {
     goToClassify() {
       this.$router.push(`/classify-store?mer_id=${this.shopId}&category_id=`);
     },
-    subscribe(s){
-      let {mer_id,mer_name,mer_avatar,type_name,product_score}=s
-      let storeArr={mer_id,mer_name,mer_avatar,type_name,product_score}
-      this.addStore(storeArr)
+    subscribe(s) {
+      let {
+        mer_id,
+        mer_name,
+        mer_avatar,
+        type_name,
+        product_score,
+        care_count,
+      } = s;
+      let storeArr = {
+        mer_id,
+        mer_name,
+        mer_avatar,
+        type_name,
+        product_score,
+        care_count,
+      };
+      this.addStore(storeArr);
     },
-     ...mapMutations(["addStore"]),
+    ...mapMutations(["addStore", "isSubscribe"]),
   },
- 
+
   components: { PageReturn, ShopHome, ShopCoupon, ShopClassify, ShopSpecial },
 };
 </script>
@@ -372,6 +388,18 @@ export default {
           font-weight: 500;
           font-size: 12px;
           color: #fff;
+          i {
+            width: 12px;
+            height: 12px;
+            background-repeat: no-repeat;
+            background-size: contain;
+          }
+          .icon1 {
+            background-image: url(@/assets/sort1.svg);
+          }
+          .icon2 {
+            background-image: url(@/assets/sort2.svg);
+          }
         }
         .active {
           background-color: #fff;
