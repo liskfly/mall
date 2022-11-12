@@ -14,6 +14,7 @@
 
 <script>
 import { Toast } from 'vant';
+import {mapMutations} from "vuex"
 import AddLocation from './AddLocation.vue'
 export default {
   data () {
@@ -48,7 +49,7 @@ export default {
       data.forEach(({ id, isDefault }) => {
         if (isDefault == true) {
           this.chosenAddressId = id
-          console.log(id);
+          // console.log(id);
         }
       })
     },
@@ -62,8 +63,10 @@ export default {
             return {...item,isDefault: false}
           }
         })
+        this.setAddressList(this.list)
         window.localStorage.setItem('location', JSON.stringify(this.list))
-    }
+    },
+    ...mapMutations(["setAddressList"])
   },
   components: {
     AddLocation

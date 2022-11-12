@@ -31,12 +31,15 @@ import {
     Field,
     Button,
     SwipeCell,
+    Sku,
+    Dialog,
     SubmitBar,
     Checkbox,
     CheckboxGroup,
     Radio,
     AddressList,
     AddressEdit
+
 } from 'vant'
 
 const vantComponents = [
@@ -72,6 +75,8 @@ const vantComponents = [
     Field,
     Button,
     SwipeCell,
+    Sku,
+    Dialog, 
     SubmitBar,
     Checkbox, 
     CheckboxGroup,

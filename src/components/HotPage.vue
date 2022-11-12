@@ -6,7 +6,8 @@
       <div class="recommend_count">
         <div class="title">{{name}}</div>
         <div class="recommend_goods">
-          <div v-for="({product_id,image,store_name}) in recommend" :key="product_id" class="item">
+          <div v-for="({product_id,image,store_name}) in recommend" :key="product_id" class="item"
+            @click="goShop(product_id)">
             <img v-lazy="image">
             <span>{{store_name}}</span>
           </div>
@@ -16,7 +17,7 @@
 
     <div class="list">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-        <div v-for="({store_name,image,product_id,merchant,price}) in list" :key="product_id" class="list_item">
+        <div v-for="({store_name,image,product_id,merchant,price}) in list" :key="product_id" class="list_item" @click="goShop(product_id)">
           <img v-lazy="image" class="store">
           <div class="store_title">
             <span class="store_name">{{store_name}}</span>
@@ -31,11 +32,13 @@
         </div>
       </van-list>
     </div>
+    <PageReturn />
   </div>
 </template>
 
 <script>
 import { hotTop, hotList } from "@/api/homeview.js"
+import PageReturn from "./PageReturn.vue";
 export default {
   data () {
     return {
@@ -51,8 +54,19 @@ export default {
   },
   created () {
     this.getHot()
-  }
-  ,
+  },
+  watch: {
+    "$route.query.hot_type" (a, b) {
+      if (a != b && a) {
+        this.type = a
+        this.page = 0
+        this.recommend = []
+        this.list = []
+        this.getHot();
+        this.getHotList()
+      }
+    },
+  },
   methods: {
     async getHot () {
       let { data } = await this.$axios(hotTop(this.type))
@@ -77,7 +91,13 @@ export default {
           this.finished = true;
         }
       }, 1000);
+    },
+    goShop (id) {
+      this.$router.push(`/store?store_id=${id}`)
     }
+  },
+  components: {
+    PageReturn
   }
 }
 </script>

@@ -4,31 +4,19 @@
     <div class="choice" v-if="data">
       <van-cell is-link title="已选择" @click="show = true" class="grey" />
     </div>
-    <van-action-sheet v-model="show" title=" ">
-      <div class="content">
-        <div class="show">
-          <img :src="data.image" />
-          <div class="details">
-            <span class="store_name">{{ data.store_name }}</span>
-            <div>
-              <span class="price">{{ "¥" + data.price }}</span>
-              <span class="stock">{{ "库存:" + data.stock }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="carnum">
-          <span>数量</span>
-          <van-stepper
-            v-model="value"
-            theme="round"
-            button-size="22"
-            disable-input
-          />
-        </div>
-      </div>
-    </van-action-sheet>
+    <van-sku
+      v-model="show"
+      :sku="sku"
+      :goods="goods"
+      :goods-id="data.product_id"
+      :quota="0"
+      :quota-used="0"
+      :hide-stock="sku.hide_stock"
+      @buy-clicked="onBuyClicked"
+      @add-cart="onAddCartClicked"
+    />
     <BottomIntroduce :data="data" />
-    <van-goods-action class="footer" style="z-index: 2011">
+    <van-goods-action class="footer" style="z-index: 1999">
       <van-goods-action-icon icon="chat-o" text="客服" color="#ee0a24" />
       <van-goods-action-icon icon="cart-o" text="购物车" />
 
@@ -49,12 +37,12 @@
       <van-goods-action-button
         type="warning"
         text="加入购物车"
-        @click="addShoppingCart(data)"
+        @click="show = true"
       />
       <van-goods-action-button
         type="danger"
         text="立即购买"
-        @click="addPayment()"
+        @click="show = true"
       />
     </van-goods-action>
     <div class="return">
@@ -62,14 +50,24 @@
       <span class="line">|</span>
       <img class="gohome" src="../assets/pic2.svg" @click="goHome" />
     </div>
+     <van-popup
+      v-model="showPlay"
+      position="right"
+      :style="{ width: '100%', height: '100%' }"
+    >
+    <PurchasePage @cancel="cancelPlay" @cancelShow='cancelShow' :playGoods="playGoods"/>
+    </van-popup>
   </div>
 </template>
 
 <script>
-import { store } from "@/api/homeview.js"
-import { mapMutations } from "vuex"
-import TopBanner from "@/components/store/TopBanner.vue"
-import BottomIntroduce from "@/components/store/BottomIntroduce.vue"
+import { store } from "@/api/homeview.js";
+import { getSku } from "@/utilis/sku.js";
+import { Toast } from "vant";
+import { mapMutations } from "vuex";
+import TopBanner from "@/components/store/TopBanner.vue";
+import BottomIntroduce from "@/components/store/BottomIntroduce.vue";
+import PurchasePage from './PurchasePage.vue';
 export default {
   data() {
     return {
@@ -77,7 +75,11 @@ export default {
       data: {},
       show: false,
       collection: false,
+      showPlay:false,
       value: 1,
+      sku: {},
+      goods: {},
+      playGoods:{}
     };
   },
   created() {
@@ -95,47 +97,82 @@ export default {
     goHome() {
       this.$router.push(`/home`);
     },
-    goBack () {
-      this.$router.go(-1)
+    goBack() {
+      this.$router.go(-1);
     },
-    async getStoreData () {
-      let { data } = await this.$axios(store(this.id))
-      this.data = data
-      this.isCollection(data)
-      this.collection = this.$store.state.ischoice
+     cancelPlay() {
+      this.showPlay = false;
     },
-    addShoppingCart (data) {
-      let { price, product_id, store_name, image, mer_id, merchant } = data
-      let mer_avatar = merchant.mer_avatar
-      let mer_name = merchant.mer_name
-      if (!this.show) {
-        data = { price, product_id, store_name, image, mer_id, mer_avatar, mer_name ,value: 1 }
-      } else {
-        data = { price, product_id, store_name, image, mer_id, mer_avatar, mer_name , value: this.value }
-        console.log(this.value);
-      }
-      this.addgoods(data)
+      cancelShow() {
+      this.show = false;
     },
-    addCollection () {
-      let { price, product_id, store_name, image, mer_id, merchant } = this.data
-      let mer_avatar = merchant.mer_avatar
-      let mer_name = merchant.mer_name
-      let data = { price, product_id, store_name, image, mer_id, mer_name , mer_avatar }
-      this.collectionAdd(data)
-      this.collection = !this.collection
+    async getStoreData() {
+      let { data } = await this.$axios(store(this.id));
+      this.data = data;
+      this.goods = { picture: data.image };
+      let { image, product_id, price } = data;
+      let footPrintData = {
+        id:new Date().getTime(),
+        image,
+        product_id,
+        price,
+      }; 
+      this.HistoricalFootprint(footPrintData)
+      this.sku = getSku(data);
+      this.isCollection(data);
+      this.collection = this.$store.state.ischoice;
     },
-    addPayment () {
-      let { price, product_id, store_name, image, mer_id, merchant } = this.data
-      let mer_avatar = merchant.mer_avatar
-      let mer_name = merchant.mer_name
-      let data = [{ price, product_id, store_name, image, mer_id, mer_avatar, mer_name , value: this.value }]
-      this.paymentAdd(data)
+    onBuyClicked(a) {
+      this.showPlay = true;
+      let { goodsId, selectedNum, selectedSkuComb } = a;
+      let { price, s1, s2 } = selectedSkuComb;
+      let { store_name, image, mer_id, merchant } = this.data;
+       this.playGoods = {
+        price: price / 100,
+        product_id: goodsId,
+        value: selectedNum,
+        store_name,
+        image,
+        mer_id,
+        mer_avatar: merchant.mer_avatar,
+        mer_name: merchant.mer_name,
+        s1,
+        s2,
+      };
     },
-    ...mapMutations(['addgoods', 'collectionAdd', 'isCollection','paymentAdd'])
+    onAddCartClicked(a) {
+      Toast("加入成功");
+      this.show = false;
+      let { goodsId, selectedNum, selectedSkuComb } = a;
+      let { price, s1, s2 } = selectedSkuComb;
+      let { store_name, image, mer_id, merchant } = this.data;
+      let data = {
+        price: price / 100,
+        product_id: goodsId,
+        value: selectedNum,
+        store_name,
+        image,
+        mer_id,
+        mer_avatar: merchant.mer_avatar,
+        mer_name: merchant.mer_name,
+        s1,
+        s2,
+      };
+      //  console.log(data);
+      this.addgoods(data);
+    },
+    ...mapMutations([
+      "addgoods",
+      "collectionAdd",
+      "isCollection",
+      "paymentAdd",
+      "HistoricalFootprint",
+    ]),
   },
   components: {
     TopBanner,
     BottomIntroduce,
+    PurchasePage,
   },
 };
 </script>

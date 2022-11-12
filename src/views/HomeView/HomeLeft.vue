@@ -24,7 +24,7 @@ export default {
         },
         goCommodity(type,id,page) {
             if(type == 'merchant'){
-                this.$router.push(`/merchant?merchant_id=${id}`)
+                this.$router.push(`/shop?shop_id=${id}`)
             }if(type == 'labels') {
                 this.$router.push(`/labels?labels_id=${id}&labels_page=${page}`)
             }

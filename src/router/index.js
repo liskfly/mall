@@ -31,7 +31,6 @@ const routes = [
     component: () => import('@/views/classifyView/classifyView.vue')
   },
   {
-
     path: '/classify-store',
     name: 'classify-store',
     component: () => import('@/views/classifyView/classifyStore.vue')
@@ -76,7 +75,7 @@ const routes = [
     path:'/userdata',
     name:'userdata',
     component:() => import('../views/UserView/UserData.vue')
-  }
+  },
 ]
 
 const blackRouter = ['/shoppingcart', '/user']

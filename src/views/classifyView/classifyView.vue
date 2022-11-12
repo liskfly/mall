@@ -11,14 +11,15 @@
           v-model="searchStr"
           @search="onSearch"
           shape="round"
-          background="rgb(202, 41, 41)"
+          background="#E93323"
           placeholder="请输入搜索关键词"
         />
-        <img
-          src="@/assets/img/weex_video_ic_return_back.png"
-          alt="goBack"
-          @click.stop="goBack"
-        />
+
+        <div
+          class="handoff"
+          :class="{ clome: handoff }"
+          @click="handoff = !handoff"
+        ></div>
       </div>
       <div class="sift">
         <van-dropdown-menu>
@@ -55,20 +56,6 @@
             </div>
           </div>
         </div>
-        <!-- <div class="store">
-          <p>店铺</p>
-          <div class="store-box">
-            <div
-              class="c-store"
-              :class="{ active: value3 == s.trader }"
-              v-for="s in storeType"
-              :key="s.text"
-              @click="setStore(s.trader)"
-            >
-              {{ s.text }}
-            </div>
-          </div>
-        </div> -->
         <div class="brand">
           <p>品牌</p>
           <div class="store-box">
@@ -91,7 +78,7 @@
     </van-popup>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
       <van-list v-model="loading" :finished="finished" @load="onLoad">
-        <div class="list-pane">
+        <div class="list-pane" :class="{ active: handoff }">
           <div
             class="goods-card"
             v-for="g in goodsList"
@@ -99,17 +86,19 @@
             @click="goToGoods(g.product_id)"
           >
             <img v-lazy="g.image" :alt="g.store_info" />
-            <div class="product-megs">
-              <p>{{ g.store_name }}</p>
-              <span>&yen;{{ g.price }}</span>
-            </div>
-            <div class="comment">
-              <span class="type">{{ g.merchant.type_name }}</span>
-              <div class="scoce">
-                <span>{{ g.rate }}评分</span>
-                <span>{{ g.reply_count }}条评论</span>
+            <div>
+              <div class="product-megs">
+                <p>{{ g.store_name }}</p>
+                <span>&yen;{{ g.price }}</span>
               </div>
-              <span class="store-name">{{ g.merchant.mer_name }}</span>
+              <div class="comment">
+                <span class="type">{{ g.merchant.type_name }}</span>
+                <div class="scoce">
+                  <span>{{ g.rate }}评分</span>
+                  <span>{{ g.reply_count }}条评论</span>
+                </div>
+                <span class="store-name"  @click.stop="goToStoreDetil(g.mer_id)">{{ g.merchant.mer_name }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -138,6 +127,7 @@ export default {
       isLoading: false,
       loading: false,
       finished: false,
+      handoff: false,
       page: 1,
       count: 0,
       searchStr: "",
@@ -195,12 +185,12 @@ export default {
       let { data } = await this.$axios(getNextGoodsApi(a, this.page));
       this.goodsList.push(...data.list);
       this.loading = false;
-      if(data.count==this.goodsList.length){
-        this.finished=true
+      if (data.count == this.goodsList.length) {
+        this.finished = true;
       }
       // }
     },
-    ...mapMutations(["setListId", "setListKeyword", "setListType"]),
+    ...mapMutations(["setListId", "setListKeyword", "resetListType"]),
     onSearch(a) {
       this.listType.keyword = a;
       // console.log(this.listType);
@@ -238,18 +228,21 @@ export default {
       this.listType.price_off = this.price2;
       this.listType.trader = this.value3;
       this.listType.brand_id = this.brand;
-      console.log(this.listType);
+      // console.log(this.listType);
       this.getGoodsList(this.listType);
     },
-     goToGoods(a){
-      this.$router.push(`/store?store_id=${a}`)
+    goToGoods(a) {
+      this.$router.push(`/store?store_id=${a}`);
     },
     goBack() {
-      this.listType.keyword = "";
-      this.listType.pid = "";
+      this.resetListType()
       this.goodsList = [];
       this.page = 1;
       this.$router.go(-1);
+      // console.log(this.listType);
+    },
+     goToStoreDetil(a){
+      this.$router.push(`/shop?shop_id=${a}`)
     },
     onRefresh() {
       setTimeout(() => {
@@ -257,11 +250,9 @@ export default {
       }, 1000);
     },
     onLoad() {
-        this.getNextList(this.listType);}
+      this.getNextList(this.listType);
+    },
   },
-  // components: {
-  //   ListPane,
-  // },
 };
 </script>
 <style lang="scss" scoped>
@@ -271,12 +262,12 @@ export default {
   top: 0;
   width: 100%;
   height: 100vh;
- background-color: rgb(248 245 245);
+  background-color: rgb(248 245 245);
   overflow: auto;
   z-index: 11;
-   &::-webkit-scrollbar {
-      display: none;
-    }
+  &::-webkit-scrollbar {
+    display: none;
+  }
   .box {
     display: flex;
     flex-direction: column;
@@ -291,7 +282,7 @@ export default {
       align-items: center;
       width: 100%;
       height: 45px;
-      background-color: rgb(202, 41, 41);
+      background-color: #e93323;
       img {
         width: 24px;
         height: 24px;
@@ -299,6 +290,16 @@ export default {
       .van-search {
         width: 280px;
         height: 45px;
+      }
+      .handoff {
+        width: 20px;
+        height: 20px;
+        background-image: url(@/assets/handoff1.svg);
+        background-repeat: no-repeat;
+        background-size: contain;
+      }
+      .clome {
+        background-image: url(@/assets/handoff2.svg);
       }
     }
     .sift {
@@ -481,6 +482,36 @@ export default {
         .store-name {
           color: #777;
           font-size: 3.5vw;
+        }
+      }
+    }
+  }
+  .active {
+    flex-direction: column;
+    flex-wrap: wrap;
+    background-color: #fff;
+    .goods-card {
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      border-radius: 0;
+      height: 120px;
+      overflow: hidden;
+      background-color: #fff;
+      img {
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+      }
+      div{
+        .product-megs{
+          p{
+          width: 240px;
+          font-size: 14px;
+          }
         }
       }
     }
