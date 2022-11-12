@@ -13,8 +13,8 @@
         class="goods"
         v-for="f in footPrint"
         :key="f.id"
-        @click="goToGoods(f.product_id)"
-        @touchstart="gtouchstart(f.id)"
+        @touchstart.prevent="gtouchstart(f.id)"
+        @touchend="touchend(f.product_id)"
       >
         <img v-lazy="f.image" />
         <div class="price">
@@ -28,6 +28,9 @@
 import { mapMutations, mapState } from "vuex";
 import { Dialog } from "vant";
 export default {
+  data() {
+    return { longTouch: false };
+  },
   computed: {
     ...mapState(["footPrint"]),
   },
@@ -39,19 +42,29 @@ export default {
       this.$router.push(`/store?store_id=${a}`);
     },
     gtouchstart(a) {
+      clearTimeout(this.timeOutEvent);
+      this.longTouch = false;
       this.timeOutEvent = setTimeout(() => {
-        this.timeOutEvent = 0;
-        Dialog.confirm({
-          message: "是否删除该条历史足迹",
-        })
-          .then(() => {
-            this.removeFootPrint(a)
+        this.longTouch = true;
+        if (this.longTouch) {
+          Dialog.confirm({
+            message: "是否删除该条历史记录",
           })
-          .catch(() => {});
-      }, 300);
+            .then(() => {
+              this.removeFootPrint(a);
+            })
+            .catch(() => {});
+        }
+      }, 500);
       return false;
     },
-    ...mapMutations(["removeFootPrint"])
+    touchend(a) {
+      clearTimeout(this.timeOutEvent);
+      if (!this.longTouch) {
+        this.goToGoods(a);
+      }
+    },
+    ...mapMutations(["removeFootPrint"]),
   },
 };
 </script>

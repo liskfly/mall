@@ -18,8 +18,8 @@
         <span
           v-for="s in searchList"
           :key="s.searchId"
-          @click="onSearch(s.text)"
-          @touchstart="gtouchstart(s.searchId)"
+          @touchstart.prevent="gtouchstart(s.searchId)"
+          @touchend="onSearch(s.text)"
           >{{ s.text }}</span
         >
       </div>
@@ -47,6 +47,7 @@ export default {
       searchList: JSON.parse(localStorage.getItem("SEARCH_LIST")) || [],
       hotKeyword: [],
       timeOutEvent: 0,
+      longTouch: false,
     };
   },
   created() {
@@ -59,17 +60,20 @@ export default {
       this.$emit("cancel", a);
     },
     onSearch(a) {
-      this.searchStr = a;
-      let b = this.searchList.find(({ text }) => text == a);
-      if (!b && a) {
-        this.searchList.unshift({
-          searchId: Date.now(),
-          text: a,
-        });
-        let searchArr = JSON.stringify(this.searchList);
-        localStorage.setItem("SEARCH_LIST", searchArr);
+      clearTimeout(this.timeOutEvent);
+      if (!this.longTouch) {
+        this.searchStr = a;
+        let b = this.searchList.find(({ text }) => text == a);
+        if (!b && a) {
+          this.searchList.unshift({
+            searchId: Date.now(),
+            text: a,
+          });
+          let searchArr = JSON.stringify(this.searchList);
+          localStorage.setItem("SEARCH_LIST", searchArr);
+        }
+        this.$router.push(`/classify?classify_keyword=${a}`);
       }
-      this.$router.push(`/classify?classify_keyword=${a}`);
     },
     async getHotKeyword() {
       let { data } = await this.$axios(getHotWord);
@@ -82,21 +86,24 @@ export default {
       localStorage.setItem("SEARCH_LIST", searchArr);
     },
     gtouchstart(a) {
+      clearTimeout(this.timeOutEvent);
+      this.longTouch = false;
       this.timeOutEvent = setTimeout(() => {
-        this.timeOutEvent = 0;
-        Dialog.confirm({
-          message: "是否删除该条历史记录",
-        })
-          .then(() => {
-            this.searchList = this.searchList.filter(
-              ({ searchId }) => searchId != a
-            );
-            let searchArr = JSON.stringify(this.searchList);
-            localStorage.setItem("SEARCH_LIST", searchArr);
+        this.longTouch = true;
+        if (this.longTouch) {
+          Dialog.confirm({
+            message: "是否删除该条历史记录",
           })
-          .catch(() => {
-          });
-      }, 300);
+            .then(() => {
+              this.searchList = this.searchList.filter(
+                ({ searchId }) => searchId != a
+              );
+              let searchArr = JSON.stringify(this.searchList);
+              localStorage.setItem("SEARCH_LIST", searchArr);
+            })
+            .catch(() => {});
+        }
+      }, 500);
       return false;
     },
   },
