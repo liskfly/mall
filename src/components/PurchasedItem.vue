@@ -9,24 +9,34 @@
       <p>订单</p>
     </div>
     <div class="box">
-      <div class="goods-item" v-for="p in paymentlist" :key="p.id">
-        <div class="store">
+      <div
+        class="goods-item"
+        v-for="p in paymentlist"
+        :key="p.id + p.product_id"
+      >
+        <div class="store" @click.stop="goToStoreDetil(p.mer_id)">
           <img v-lazy="p.mer_avatar" alt="p.mer_name" />
-          <p>{{p.mer_name}}</p>
+          <p>{{ p.mer_name }}</p>
         </div>
         <div class="goods">
           <img v-lazy="p.image" :alt="p.store_name" />
           <div class="goods-meg">
             <p class="store-name">{{ p.store_name }}</p>
             <div class="good">
-              <span>{{p.s1}}{{ p.s2?','+p.s2:''}}</span> <span class="price">￥{{ p.price *  p.value}}</span>
+              <span>{{ p.s1 }}{{ p.s2 ? "," + p.s2 : "" }}</span>
+              <span class="price"
+                >￥{{ parseFloat(p.price * p.value).toFixed(2) }}</span
+              >
             </div>
             <div>
               <span class="count">x{{ p.value }}</span>
             </div>
           </div>
         </div>
-        <div class="store-bottom"><span>删除订单</span><span>加入购物车</span></div>
+        <div class="store-bottom">
+          <span>删除订单</span>
+          <!-- <span>加入购物车</span> -->
+        </div>
       </div>
     </div>
   </div>
@@ -42,6 +52,9 @@ export default {
       let a = false;
       this.$emit("cancel", a);
     },
+     goToStoreDetil(a){
+      this.$router.push(`/shop?shop_id=${a}`)
+    }
   },
 };
 </script>
@@ -121,14 +134,14 @@ export default {
               font-size: 13px;
             }
           }
-          .good{
-              display: flex;
-              justify-content: space-between;
-              span{
-                color: #999;
-                font-size: 12px;
-              }
-              .price {
+          .good {
+            display: flex;
+            justify-content: space-between;
+            span {
+              color: #999;
+              font-size: 12px;
+            }
+            .price {
               color: red;
               font-size: 15px;
               font-weight: bold;

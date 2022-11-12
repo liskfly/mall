@@ -93,10 +93,8 @@ export default {
             );
             let searchArr = JSON.stringify(this.searchList);
             localStorage.setItem("SEARCH_LIST", searchArr);
-            // console.log(a);
           })
           .catch(() => {
-            // on cancel
           });
       }, 300);
       return false;

@@ -1,7 +1,7 @@
 <template>
   <div class="user">
     <div class="top">
-      <div class="flex topbox justify-SB">
+      <div class="flex topbox justify-SB" @click="goUserData">
         <img src="../../assets/img/me.jpg" class="head" />
         <div class="flex flex-1 justify-SB flex-d-c userdata">
           <span>{{ "用户名:" + name }}</span>
@@ -80,7 +80,7 @@
       <PurchasedItem @cancel="cancelPurchased" />
     </van-popup>
     <van-popup v-model="showFoot" position="top" :style="{ height: '100%' }">
-      <FootPrint @cancel=" cancelFoot" />
+      <FootPrint @cancel="cancelFoot" />
     </van-popup>
   </div>
 </template>
@@ -91,7 +91,7 @@ import FootPrint from "../../components/FootPrint.vue";
 import PurchasedItem from "../../components/PurchasedItem.vue";
 import SubScribe from "../../components/SubScribe.vue";
 export default {
-  components: { SubScribe, CollectibleItem, PurchasedItem, FootPrint},
+  components: { SubScribe, CollectibleItem, PurchasedItem, FootPrint },
   data() {
     return {
       name: "",
@@ -105,9 +105,6 @@ export default {
     this.getUserName();
   },
   methods: {
-    getUserName() {
-      this.name = JSON.parse(window.sessionStorage.getItem("token")).user;
-    },
     cancel() {
       this.showSearch = false;
     },
@@ -117,9 +114,15 @@ export default {
     cancelPurchased() {
       this.shoePurchased = false;
     },
-    cancelFoot(){
-      this.showFoot=false
-    }
+    cancelFoot() {
+      this.showFoot = false;
+    },
+    getUserName() {
+      this.name = JSON.parse(window.sessionStorage.getItem("token")).user;
+    },
+    goUserData() {
+      this.$router.push(`/userdata`);
+    },
   },
 };
 </script>

@@ -9,15 +9,24 @@
       <p>我的足迹</p>
     </div>
     <div class="box">
-        <div class="goods" v-for="f in footPrint" :key="f.id" @click=" goToGoods(f.product_id)">
-            <img v-lazy="f.image">
-            <div class="price"><span class="text">￥</span><span class="sum">{{f.price}}</span></div>
+      <div
+        class="goods"
+        v-for="f in footPrint"
+        :key="f.id"
+        @click="goToGoods(f.product_id)"
+        @touchstart="gtouchstart(f.id)"
+      >
+        <img v-lazy="f.image" />
+        <div class="price">
+          <span class="text">￥</span><span class="sum">{{ f.price }}</span>
         </div>
+      </div>
     </div>
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapMutations, mapState } from "vuex";
+import { Dialog } from "vant";
 export default {
   computed: {
     ...mapState(["footPrint"]),
@@ -29,6 +38,20 @@ export default {
     goToGoods(a) {
       this.$router.push(`/store?store_id=${a}`);
     },
+    gtouchstart(a) {
+      this.timeOutEvent = setTimeout(() => {
+        this.timeOutEvent = 0;
+        Dialog.confirm({
+          message: "是否删除该条历史足迹",
+        })
+          .then(() => {
+            this.removeFootPrint(a)
+          })
+          .catch(() => {});
+      }, 300);
+      return false;
+    },
+    ...mapMutations(["removeFootPrint"])
   },
 };
 </script>
@@ -61,30 +84,30 @@ export default {
       margin: auto;
     }
   }
-  .box{
-     padding: 20px 3vw;
-     display: flex;
-     gap: 25px;
-     flex-wrap: wrap;
-     .goods{
-        width: 100px;
-        display: flex;
-        flex-direction: column;
-        img{
-            border-radius: 10px;
-            width: 100%;
+  .box {
+    padding: 20px 3vw;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    .goods {
+      width: 100px;
+      display: flex;
+      flex-direction: column;
+      img {
+        border-radius: 10px;
+        width: 100%;
+      }
+      .price {
+        margin-top: 10px;
+        color: red;
+        .text {
+          font-size: 13px;
         }
-        .price{
-            margin-top: 10px;
-            color: red;
-            .text{
-              font-size: 13px;  
-            }
-            .sum{
-                font-size: 15px;
-            }
+        .sum {
+          font-size: 15px;
         }
-     }
+      }
+    }
   }
 }
 </style>

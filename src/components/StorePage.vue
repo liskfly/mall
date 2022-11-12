@@ -50,6 +50,13 @@
       <span class="line">|</span>
       <img class="gohome" src="../assets/pic2.svg" @click="goHome" />
     </div>
+     <van-popup
+      v-model="showPlay"
+      position="right"
+      :style="{ width: '100%', height: '100%' }"
+    >
+    <PurchasePage @cancel="cancelPlay" @cancelShow='cancelShow' :playGoods="playGoods"/>
+    </van-popup>
   </div>
 </template>
 
@@ -60,6 +67,7 @@ import { Toast } from "vant";
 import { mapMutations } from "vuex";
 import TopBanner from "@/components/store/TopBanner.vue";
 import BottomIntroduce from "@/components/store/BottomIntroduce.vue";
+import PurchasePage from './PurchasePage.vue';
 export default {
   data() {
     return {
@@ -67,9 +75,11 @@ export default {
       data: {},
       show: false,
       collection: false,
+      showPlay:false,
       value: 1,
       sku: {},
       goods: {},
+      playGoods:{}
     };
   },
   created() {
@@ -90,6 +100,12 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
+     cancelPlay() {
+      this.showPlay = false;
+    },
+      cancelShow() {
+      this.show = false;
+    },
     async getStoreData() {
       let { data } = await this.$axios(store(this.id));
       this.data = data;
@@ -100,21 +116,18 @@ export default {
         image,
         product_id,
         price,
-      };
-      console.log(footPrintData);
+      }; 
       this.HistoricalFootprint(footPrintData)
       this.sku = getSku(data);
       this.isCollection(data);
       this.collection = this.$store.state.ischoice;
     },
     onBuyClicked(a) {
-      Toast("购买成功");
-      this.show = false;
+      this.showPlay = true;
       let { goodsId, selectedNum, selectedSkuComb } = a;
       let { price, s1, s2 } = selectedSkuComb;
       let { store_name, image, mer_id, merchant } = this.data;
-      let data = {
-        id: new Date().getTime(),
+       this.playGoods = {
         price: price / 100,
         product_id: goodsId,
         value: selectedNum,
@@ -126,7 +139,6 @@ export default {
         s1,
         s2,
       };
-      this.paymentAdd(data);
     },
     onAddCartClicked(a) {
       Toast("加入成功");
@@ -135,7 +147,6 @@ export default {
       let { price, s1, s2 } = selectedSkuComb;
       let { store_name, image, mer_id, merchant } = this.data;
       let data = {
-        id: new Date().getTime(),
         price: price / 100,
         product_id: goodsId,
         value: selectedNum,
@@ -161,6 +172,7 @@ export default {
   components: {
     TopBanner,
     BottomIntroduce,
+    PurchasePage,
   },
 };
 </script>

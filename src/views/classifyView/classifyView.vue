@@ -97,7 +97,7 @@
                   <span>{{ g.rate }}评分</span>
                   <span>{{ g.reply_count }}条评论</span>
                 </div>
-                <span class="store-name">{{ g.merchant.mer_name }}</span>
+                <span class="store-name"  @click.stop="goToStoreDetil(g.mer_id)">{{ g.merchant.mer_name }}</span>
               </div>
             </div>
           </div>
@@ -240,6 +240,9 @@ export default {
       this.page = 1;
       this.$router.go(-1);
       // console.log(this.listType);
+    },
+     goToStoreDetil(a){
+      this.$router.push(`/shop?shop_id=${a}`)
     },
     onRefresh() {
       setTimeout(() => {

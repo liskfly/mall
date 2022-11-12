@@ -8,13 +8,17 @@ export default new Vuex.Store({
   state: {
     storeArr: JSON.parse(localStorage.getItem("CONXERN_STORE")) || [],
     listType: chooseType,
+    isAddgoods: false,
     goodscar: JSON.parse(window.localStorage.getItem('goodscar')) || [],
     same: false,
     collectionlist: JSON.parse(window.localStorage.getItem('collection')) || [],
     ischoice: false,
     paymentlist: JSON.parse(window.localStorage.getItem('payment')) || [],
     isConxern: false,
-    footPrint: JSON.parse(localStorage.getItem('FOOT_PRINT')) || []
+    footPrint: JSON.parse(localStorage.getItem('FOOT_PRINT')) || [],
+    data: JSON.parse(window.sessionStorage.getItem('token')) || {},
+    location: JSON.parse(window.localStorage.getItem('location')) || [],
+    addressList: JSON.parse(localStorage.getItem('location')) || []
   },
   getters: {
   },
@@ -64,15 +68,12 @@ export default new Vuex.Store({
         state.footPrint.unshift(footData)
         let foot = JSON.stringify(state.footPrint);
         localStorage.setItem("FOOT_PRINT", foot);
-      }else{
-         state.footPrint= state.footPrint.filter(f=>footData.product_id!=f.product_id)
-         state.footPrint.unshift(footData)
-         let foot = JSON.stringify(state.footPrint);
-         localStorage.setItem("FOOT_PRINT", foot);
+      } else {
+        state.footPrint = state.footPrint.filter(f => footData.product_id != f.product_id)
+        state.footPrint.unshift(footData)
+        let foot = JSON.stringify(state.footPrint);
+        localStorage.setItem("FOOT_PRINT", foot);
       }
-     
-      console.log(a);
-
     },
     removeHistorical(state, id) {
       state.footPrint = state.footPrint.filter(f => f.id != id)
@@ -84,14 +85,14 @@ export default new Vuex.Store({
         if (data.product_id == item.product_id) {
           item.value = data.value + item.value
         } else {
-          state.same = true
+          state.isAddgoods = true
         }
       })
-      if (state.same || state.goodscar.length == 0) {
+      if (state.isAddgoods || state.goodscar.length == 0) {
         state.goodscar.push(data)
       }
       window.localStorage.setItem('goodscar', JSON.stringify(state.goodscar))
-      state.same = false
+      state.isAddgoods = false
     },
     collectionAdd(state, data) {
       state.collectionlist = state.collectionlist.filter(({ product_id }) => {
@@ -102,7 +103,6 @@ export default new Vuex.Store({
           return true
         }
       })
-      // console.log(state.collectionlist);
       if (state.same == false) {
         state.collectionlist.unshift(data)
       }
@@ -119,8 +119,45 @@ export default new Vuex.Store({
       })
     },
     paymentAdd(state, data) {
-      state.paymentlist.unshift(data)
+      if (Array.isArray(data)) {
+        state.paymentlist.unshift(...data)
+      } else {
+        state.paymentlist.unshift(data)
+      }
       window.localStorage.setItem('payment', JSON.stringify(state.paymentlist))
+    },
+    replacegoodscar(state, data) {
+      state.goodscar = data
+      window.localStorage.setItem('goodscar', JSON.stringify(state.goodscar))
+    },
+    createLocation(state, data) {
+      let create = {}
+      create.id = state.location.length + 1 || 1
+      create.name = data.name
+      create.tel = data.tel
+      create.address = data.city + data.province + data.county + data.addressDetail
+      create.isDefault = data.isDefault || false
+      console.log(create);
+      state.location.push(create)
+      state.location = state.location.map((item) => {
+        if (item.id != create.id && create.isDefault == true) {
+          return { ...item, isDefault: false }
+        } else {
+          return item
+        }
+      })
+      localStorage.setItem('location', JSON.stringify(state.location))
+    },
+    setAddressList(state, a) {
+      state.addressList = a
+      window.localStorage.setItem('location', JSON.stringify(state.addressList))
+    },
+    removeFootPrint(state, a) {
+      state.footPrint = state.footPrint.filter(
+        ({ id }) => id != a
+      );
+      let searchArr = JSON.stringify(state.footPrint);
+      localStorage.setItem("FOOT_PRINT", searchArr);
     }
   },
   actions: {
