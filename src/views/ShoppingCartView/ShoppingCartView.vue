@@ -118,10 +118,9 @@ export default {
       let data = []
       let car = this.goodscar.filter((item, i) => {
         if (this.$refs.fff[i].checked == true) {
-          
+          data.push(...item)
           return false
         } else {
-          data.push(item)
           return true
         }
       })
@@ -129,7 +128,7 @@ export default {
       this.replacegoodscar(car)
       this.Total = 0
     },
-    ...mapMutations(['replacegoodscar','paymentAdd'])
+    ...mapMutations(['replacegoodscar', 'paymentAdd'])
   }
 }
 </script>

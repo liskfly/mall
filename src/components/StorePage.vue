@@ -77,7 +77,6 @@ export default {
       data: {},
       show: false,
       collection: false,
-      // loading: true,
       value: 1,
     };
   },
