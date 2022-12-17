@@ -87,13 +87,6 @@ export const Hot = [{
     id:'21512'
 }]
 
-// {
-//     src:'http://gdypyg-1306651434.file.myqcloud.com/def/c3c17202210281022004222.jpg?imageMogr2/thumbnail/!100p',
-//     type:'store',
-//     name:'促销单件',
-//     id:'21512'
-// },
-
 export const HomeList = (page) => {return `product/spu/recommend?page=${page}&limit=30`}
 
 export const categoryList = (id) => `store/product/category?pid=${id}`

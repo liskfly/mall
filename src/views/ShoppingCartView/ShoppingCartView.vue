@@ -7,23 +7,24 @@
     <div>
       <div
         v-for="(
-          { product_id, image, mer_avatar, mer_name, store_name, price, value },
+          { product_id, image, mer_avatar, mer_name, store_name, price, value ,s1,mer_id},
           index
         ) in goodscar"
         :key="product_id"
         class="goodslist"
       >
         <van-swipe-cell>
-          <div class="shop">
+          <div class="shop" @click="goShop(mer_id)">
             <img :src="mer_avatar" />
             <span>{{ mer_name }}</span>
             <img src="../../assets/img/mP.png" class="enter" />
           </div>
           <div class="goods">
             <input type="checkbox" ref="fff" @click="listCheck" />
-            <img :src="image" />
+            <img :src="image"  @click="goGoods(product_id)" />
             <div class="goodsdata">
               <span class="store_name">{{ store_name }}</span>
+              <span class="grey">{{s1}}</span>
               <div class="price">
                 <span class="univalent">¥{{ price }}</span>
                 <div>
@@ -154,6 +155,12 @@ export default {
       this.replacegoodscar(car);
       this.Total = 0;
     },
+    goGoods(id) {
+      this.$router.push(`/store?store_id=${id}`)
+    },
+    goShop(id) {
+      this.$router.push(`/shop?shop_id=${id}`)
+    },
     ...mapMutations(["replacegoodscar", "paymentAdd"]),
   },
 };
@@ -245,6 +252,11 @@ export default {
         display: flex;
         justify-content: space-between;
         flex-direction: column;
+
+        .grey {
+          font-size: 14px;
+          color: grey;
+        }
 
         .store_name {
           font-weight: 700;

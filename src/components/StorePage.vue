@@ -140,6 +140,10 @@ export default {
         s2,
       };
     },
+    addCollection() {
+      this.collectionAdd(this.data)
+      this.collection = !this.collection
+    },
     onAddCartClicked(a) {
       Toast("加入成功");
       this.show = false;
